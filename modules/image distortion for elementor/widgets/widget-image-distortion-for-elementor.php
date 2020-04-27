@@ -43,6 +43,9 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 				'default' => [
 					'url' => \Elementor\Utils::get_placeholder_image_src(),
 				],
+				'dynamic' => [
+					'active' => true,
+				],
 			]
 		);
 		// $img_size = '<div style="direction:ltr;color: #3e3e3e;text-align:left">Avaliable sizes:<br />'.implode('<br />',get_intermediate_image_sizes()).'</div>';
