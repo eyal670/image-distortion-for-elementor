@@ -55,7 +55,7 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 		// 		'description' => $img_size,
 		// 	]
 		// );
-		$this->add_control(
+		$this->add_responsive_control(
 			'img_width',
 			[
 				'label' => __( 'Image Width', 'happy-pins' ),
@@ -77,7 +77,7 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 				],
 			]
 		);
-		$this->add_control(
+		$this->add_responsive_control(
 			'img_align',
 			[
 				'label' => __( 'Alignment', 'happy-pins' ),
