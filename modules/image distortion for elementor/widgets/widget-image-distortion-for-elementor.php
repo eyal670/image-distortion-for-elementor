@@ -76,7 +76,7 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .c-glitch' => 'width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .c-glitch' => 'width:{{SIZE}}{{UNIT}}; background-size: {{SIZE}}{{UNIT}} {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
@@ -137,7 +137,14 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 		$display_img = wp_get_attachment_image( $settings['display_image']['id'], $settings['img_size'] );
 		$img_url = $settings['display_image']['url'];
 		?>
-			<div class="c-glitch"
+			<div class="c-glitch">
+				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
+				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
+				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
+				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
+				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
+			</div>
+			<!-- <div class="c-glitch"
 				style="background-image: url('<?php echo $img_url ?>');">
 				<div class="c-glitch__img"
 					style="background-image: url('<?php echo $img_url ?>');">
@@ -154,7 +161,7 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 				<div class="c-glitch__img"
 					style="background-image: url('<?php echo $img_url ?>');">
 				</div>
-			</div>
+			</div> -->
 		<?php
 
 	}

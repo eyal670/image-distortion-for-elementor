@@ -127,7 +127,7 @@
     margin: 0 auto;
     overflow: hidden;
     position: relative;
-    width: 60vw;
+    /* width: 60vw; */
   }
 
   .c-glitch__img {
