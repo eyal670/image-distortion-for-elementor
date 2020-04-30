@@ -207,7 +207,7 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .elementor-image img' => 'width: {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .elementor-image .c-glitch' => 'width: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);

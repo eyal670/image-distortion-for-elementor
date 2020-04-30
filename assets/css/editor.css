@@ -146,6 +146,9 @@
   .c-glitch {
     position: relative;
   }
+  .c-glitch img{
+    width: 100%;
+  }
   .c-glitch__img {
       position: absolute;
       top: 0;
