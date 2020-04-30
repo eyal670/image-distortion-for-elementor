@@ -26,149 +26,696 @@ class Widget_image_distortion_for_elementor extends Widget_Base {
 	}
 
 	protected function _register_controls() {
-		/* List Section */
 		$this->start_controls_section(
-			'img_section',
+			'section_image',
 			[
-				'label' => esc_html__( 'Image', 'elementor-custom-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
+				'label' => __( 'Image', 'elementor' ),
 			]
 		);
+
 		$this->add_control(
-			'display_image',
+			'image',
 			[
-				'label' => __( 'Display Image', 'happy-pins' ),
-				'type' => \Elementor\Controls_Manager::MEDIA,
-				'description' => 'The actual image that will be shown in your post. (which does not have to be a pinable image!)  If you want a different image to be shared on Pinterest add it to the "Pin Image" box below.',
+				'label' => __( 'Choose Image', 'elementor' ),
+				'type' => Controls_Manager::MEDIA,
+				'dynamic' => [
+					'active' => true,
+				],
 				'default' => [
-					'url' => \Elementor\Utils::get_placeholder_image_src(),
+					'url' => Utils::get_placeholder_image_src(),
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Image_Size::get_type(),
+			[
+				'name' => 'image', // Usage: `{name}_size` and `{name}_custom_dimension`, in this case `image_size` and `image_custom_dimension`.
+				'default' => 'large',
+				'separator' => 'none',
+			]
+		);
+
+		$this->add_responsive_control(
+			'align',
+			[
+				'label' => __( 'Alignment', 'elementor' ),
+				'type' => Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'elementor' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'elementor' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'elementor' ),
+						'icon' => 'eicon-text-align-right',
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}}' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'caption_source',
+			[
+				'label' => __( 'Caption', 'elementor' ),
+				'type' => Controls_Manager::SELECT,
+				'options' => [
+					'none' => __( 'None', 'elementor' ),
+					'attachment' => __( 'Attachment Caption', 'elementor' ),
+					'custom' => __( 'Custom Caption', 'elementor' ),
+				],
+				'default' => 'none',
+			]
+		);
+
+		$this->add_control(
+			'caption',
+			[
+				'label' => __( 'Custom Caption', 'elementor' ),
+				'type' => Controls_Manager::TEXT,
+				'default' => '',
+				'placeholder' => __( 'Enter your image caption', 'elementor' ),
+				'condition' => [
+					'caption_source' => 'custom',
 				],
 				'dynamic' => [
 					'active' => true,
 				],
 			]
 		);
-		// $img_size = '<div style="direction:ltr;color: #3e3e3e;text-align:left">Avaliable sizes:<br />'.implode('<br />',get_intermediate_image_sizes()).'</div>';
-		// $this->add_control(
-		// 	'img_size',
-		// 	[
-		// 		'label' => __( 'Image Size', 'happy-pins' ),
-		// 		'type' => \Elementor\Controls_Manager::TEXT,
-		// 		'default' => __( 'large' , 'happy-pins' ),
-		// 		'description' => $img_size,
-		// 	]
-		// );
-		$this->add_responsive_control(
-			'img_width',
+
+		$this->add_control(
+			'link_to',
 			[
-				'label' => __( 'Image Width', 'happy-pins' ),
+				'label' => __( 'Link', 'elementor' ),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'none',
+				'options' => [
+					'none' => __( 'None', 'elementor' ),
+					'file' => __( 'Media File', 'elementor' ),
+					'custom' => __( 'Custom URL', 'elementor' ),
+				],
+			]
+		);
+
+		$this->add_control(
+			'link',
+			[
+				'label' => __( 'Link', 'elementor' ),
+				'type' => Controls_Manager::URL,
+				'dynamic' => [
+					'active' => true,
+				],
+				'placeholder' => __( 'https://your-link.com', 'elementor' ),
+				'condition' => [
+					'link_to' => 'custom',
+				],
+				'show_label' => false,
+			]
+		);
+
+		$this->add_control(
+			'open_lightbox',
+			[
+				'label' => __( 'Lightbox', 'elementor' ),
+				'type' => Controls_Manager::SELECT,
+				'default' => 'default',
+				'options' => [
+					'default' => __( 'Default', 'elementor' ),
+					'yes' => __( 'Yes', 'elementor' ),
+					'no' => __( 'No', 'elementor' ),
+				],
+				'condition' => [
+					'link_to' => 'file',
+				],
+			]
+		);
+
+		$this->add_control(
+			'view',
+			[
+				'label' => __( 'View', 'elementor' ),
+				'type' => Controls_Manager::HIDDEN,
+				'default' => 'traditional',
+			]
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_style_image',
+			[
+				'label' => __( 'Image', 'elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			]
+		);
+
+		$this->add_responsive_control(
+			'width',
+			[
+				'label' => __( 'Width', 'elementor' ),
 				'type' => Controls_Manager::SLIDER,
-				'size_units' => [ 'px', '%' ],
+				'default' => [
+					'unit' => '%',
+				],
+				'tablet_default' => [
+					'unit' => '%',
+				],
+				'mobile_default' => [
+					'unit' => '%',
+				],
+				'size_units' => [ '%', 'px', 'vw' ],
+				'range' => [
+					'%' => [
+						'min' => 1,
+						'max' => 100,
+					],
+					'px' => [
+						'min' => 1,
+						'max' => 1000,
+					],
+					'vw' => [
+						'min' => 1,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image img' => 'width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_responsive_control(
+			'space',
+			[
+				'label' => __( 'Max Width', 'elementor' ) . ' (%)',
+				'type' => Controls_Manager::SLIDER,
+				'default' => [
+					'unit' => '%',
+				],
+				'tablet_default' => [
+					'unit' => '%',
+				],
+				'mobile_default' => [
+					'unit' => '%',
+				],
+				'size_units' => [ '%' ],
+				'range' => [
+					'%' => [
+						'min' => 1,
+						'max' => 100,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image img' => 'max-width: {{SIZE}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'separator_panel_style',
+			[
+				'type' => Controls_Manager::DIVIDER,
+				'style' => 'thick',
+			]
+		);
+
+		$this->start_controls_tabs( 'image_effects' );
+
+		$this->start_controls_tab( 'normal',
+			[
+				'label' => __( 'Normal', 'elementor' ),
+			]
+		);
+
+		$this->add_control(
+			'opacity',
+			[
+				'label' => __( 'Opacity', 'elementor' ),
+				'type' => Controls_Manager::SLIDER,
 				'range' => [
 					'px' => [
-						'min' => 0,
-						'max' => 1000,
-						'step' => 5,
+						'max' => 1,
+						'min' => 0.10,
+						'step' => 0.01,
 					],
-					'%' => [
+				],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image img' => 'opacity: {{SIZE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Css_Filter::get_type(),
+			[
+				'name' => 'css_filters',
+				'selector' => '{{WRAPPER}} .elementor-image img',
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->start_controls_tab( 'hover',
+			[
+				'label' => __( 'Hover', 'elementor' ),
+			]
+		);
+
+		$this->add_control(
+			'opacity_hover',
+			[
+				'label' => __( 'Opacity', 'elementor' ),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'max' => 1,
+						'min' => 0.10,
+						'step' => 0.01,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image:hover img' => 'opacity: {{SIZE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Css_Filter::get_type(),
+			[
+				'name' => 'css_filters_hover',
+				'selector' => '{{WRAPPER}} .elementor-image:hover img',
+			]
+		);
+
+		$this->add_control(
+			'background_hover_transition',
+			[
+				'label' => __( 'Transition Duration', 'elementor' ),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
+						'max' => 3,
+						'step' => 0.1,
+					],
+				],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image img' => 'transition-duration: {{SIZE}}s',
+				],
+			]
+		);
+
+		$this->add_control(
+			'hover_animation',
+			[
+				'label' => __( 'Hover Animation', 'elementor' ),
+				'type' => Controls_Manager::HOVER_ANIMATION,
+			]
+		);
+
+		$this->end_controls_tab();
+
+		$this->end_controls_tabs();
+
+		$this->add_group_control(
+			Group_Control_Border::get_type(),
+			[
+				'name' => 'image_border',
+				'selector' => '{{WRAPPER}} .elementor-image img',
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_responsive_control(
+			'image_border_radius',
+			[
+				'label' => __( 'Border Radius', 'elementor' ),
+				'type' => Controls_Manager::DIMENSIONS,
+				'size_units' => [ 'px', '%' ],
+				'selectors' => [
+					'{{WRAPPER}} .elementor-image img' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Box_Shadow::get_type(),
+			[
+				'name' => 'image_box_shadow',
+				'exclude' => [
+					'box_shadow_position',
+				],
+				'selector' => '{{WRAPPER}} .elementor-image img',
+			]
+		);
+
+		$this->end_controls_section();
+
+		$this->start_controls_section(
+			'section_style_caption',
+			[
+				'label' => __( 'Caption', 'elementor' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+				'condition' => [
+					'caption_source!' => 'none',
+				],
+			]
+		);
+
+		$this->add_control(
+			'caption_align',
+			[
+				'label' => __( 'Alignment', 'elementor' ),
+				'type' => Controls_Manager::CHOOSE,
+				'options' => [
+					'left' => [
+						'title' => __( 'Left', 'elementor' ),
+						'icon' => 'eicon-text-align-left',
+					],
+					'center' => [
+						'title' => __( 'Center', 'elementor' ),
+						'icon' => 'eicon-text-align-center',
+					],
+					'right' => [
+						'title' => __( 'Right', 'elementor' ),
+						'icon' => 'eicon-text-align-right',
+					],
+					'justify' => [
+						'title' => __( 'Justified', 'elementor' ),
+						'icon' => 'eicon-text-align-justify',
+					],
+				],
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .widget-image-caption' => 'text-align: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_control(
+			'text_color',
+			[
+				'label' => __( 'Text Color', 'elementor' ),
+				'type' => Controls_Manager::COLOR,
+				'default' => '',
+				'selectors' => [
+					'{{WRAPPER}} .widget-image-caption' => 'color: {{VALUE}};',
+				],
+				'scheme' => [
+					'type' => Scheme_Color::get_type(),
+					'value' => Scheme_Color::COLOR_3,
+				],
+			]
+		);
+
+		$this->add_control(
+			'caption_background_color',
+			[
+				'label' => __( 'Background Color', 'elementor' ),
+				'type' => Controls_Manager::COLOR,
+				'selectors' => [
+					'{{WRAPPER}} .widget-image-caption' => 'background-color: {{VALUE}};',
+				],
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			[
+				'name' => 'caption_typography',
+				'selector' => '{{WRAPPER}} .widget-image-caption',
+				'scheme' => Scheme_Typography::TYPOGRAPHY_3,
+			]
+		);
+
+		$this->add_group_control(
+			Group_Control_Text_Shadow::get_type(),
+			[
+				'name' => 'caption_text_shadow',
+				'selector' => '{{WRAPPER}} .widget-image-caption',
+			]
+		);
+
+		$this->add_responsive_control(
+			'caption_space',
+			[
+				'label' => __( 'Spacing', 'elementor' ),
+				'type' => Controls_Manager::SLIDER,
+				'range' => [
+					'px' => [
 						'min' => 0,
 						'max' => 100,
 					],
 				],
 				'selectors' => [
-					'{{WRAPPER}} .c-glitch' => 'width:{{SIZE}}{{UNIT}}; background-size: {{SIZE}}{{UNIT}} {{SIZE}}{{UNIT}};',
+					'{{WRAPPER}} .widget-image-caption' => 'margin-top: {{SIZE}}{{UNIT}};',
 				],
 			]
 		);
-		$this->add_responsive_control(
-			'img_align',
-			[
-				'label' => __( 'Alignment', 'happy-pins' ),
-				'type' => \Elementor\Controls_Manager::CHOOSE,
-				'options' => [
-					'left' => [
-						'title' => __( 'Left', 'happy-pins' ),
-						'icon' => 'fa fa-align-left',
-					],
-					'center' => [
-						'title' => __( 'Center', 'happy-pins' ),
-						'icon' => 'fa fa-align-center',
-					],
-					'right' => [
-						'title' => __( 'Right', 'happy-pins' ),
-						'icon' => 'fa fa-align-right',
-					],
-				],
-				'default' => 'center',
-				'toggle' => true,
-			]
-		);
-		$this->end_controls_section();
-		/* End of List Section */
 
-		$this->start_controls_section(
-			'info_section',
-			[
-				'label' => esc_html__( 'Info', 'elementor-custom-widget' ),
-				'tab' => \Elementor\Controls_Manager::TAB_CONTENT,
-			]
-		);
-		$html =
-			'<div calss="info_section">
-				<div style="text-align:center;">
-					Built by <span style="color:#c4015d">Happy-Apps</span>
-				</div>
-			</div>';
-		$this->add_control(
-			'info',
-			[
-				'type' => \Elementor\Controls_Manager::RAW_HTML,
-				'raw' => __( $html, 'happy-pins' ),
-				'content_classes' => 'your-class',
-			]
-		);
 		$this->end_controls_section();
 	}
 
-	protected function render( $instance = [] ) {
-		// get our input from the widget settings.
+	/**
+	 * Check if the current widget has caption
+	 *
+	 * @access private
+	 * @since 2.3.0
+	 *
+	 * @param array $settings
+	 *
+	 * @return boolean
+	 */
+	private function has_caption( $settings ) {
+		return ( ! empty( $settings['caption_source'] ) && 'none' !== $settings['caption_source'] );
+	}
+
+	/**
+	 * Get the caption for current widget.
+	 *
+	 * @access private
+	 * @since 2.3.0
+	 * @param $settings
+	 *
+	 * @return string
+	 */
+	private function get_caption( $settings ) {
+		$caption = '';
+		if ( ! empty( $settings['caption_source'] ) ) {
+			switch ( $settings['caption_source'] ) {
+				case 'attachment':
+					$caption = wp_get_attachment_caption( $settings['image']['id'] );
+					break;
+				case 'custom':
+					$caption = ! Utils::is_empty( $settings['caption'] ) ? $settings['caption'] : '';
+			}
+		}
+		return $caption;
+	}
+
+	/**
+	 * Render image widget output on the frontend.
+	 *
+	 * Written in PHP and used to generate the final HTML.
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 */
+	protected function render() {
 		$settings = $this->get_settings_for_display();
-		//get display image
-		$display_img = wp_get_attachment_image( $settings['display_image']['id'], $settings['img_size'] );
-		$img_url = $settings['display_image']['url'];
-		?>
-			<div class="c-glitch">
-				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
-				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
-				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
-				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
-				<img class="c-glitch__img" src="<?php echo $img_url ?>" />
-			</div>
-			<!-- <div class="c-glitch"
-				style="background-image: url('<?php echo $img_url ?>');">
-				<div class="c-glitch__img"
-					style="background-image: url('<?php echo $img_url ?>');">
-				</div>
-				<div class="c-glitch__img"
-					style="background-image: url('<?php echo $img_url ?>');">
-				</div>
-				<div class="c-glitch__img"
-					style="background-image: url('<?php echo $img_url ?>');">
-				</div>
-				<div class="c-glitch__img"
-					style="background-image: url('<?php echo $img_url ?>');">
-				</div>
-				<div class="c-glitch__img"
-					style="background-image: url('<?php echo $img_url ?>');">
-				</div>
-			</div> -->
-		<?php
 
+		if ( empty( $settings['image']['url'] ) ) {
+			return;
+		}
+
+		$has_caption = $this->has_caption( $settings );
+
+		$this->add_render_attribute( 'wrapper', 'class', 'elementor-image' );
+
+		if ( ! empty( $settings['shape'] ) ) {
+			$this->add_render_attribute( 'wrapper', 'class', 'elementor-image-shape-' . $settings['shape'] );
+		}
+
+		$link = $this->get_link_url( $settings );
+
+		if ( $link ) {
+			$this->add_render_attribute( 'link', [
+				'href' => $link['url'],
+				'data-elementor-open-lightbox' => $settings['open_lightbox'],
+			] );
+
+			if ( Plugin::$instance->editor->is_edit_mode() ) {
+				$this->add_render_attribute( 'link', [
+					'class' => 'elementor-clickable',
+				] );
+			}
+
+			if ( ! empty( $link['is_external'] ) ) {
+				$this->add_render_attribute( 'link', 'target', '_blank' );
+			}
+
+			if ( ! empty( $link['nofollow'] ) ) {
+				$this->add_render_attribute( 'link', 'rel', 'nofollow' );
+			}
+		} ?>
+		<div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
+			<?php if ( $has_caption ) : ?>
+				<figure class="wp-caption">
+			<?php endif; ?>
+			<?php if ( $link ) : ?>
+					<a <?php echo $this->get_render_attribute_string( 'link' ); ?>>
+			<?php endif; ?>
+				<div class="c-glitch">
+					<?php echo '<div class="c-glitch__img">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?>
+					<?php echo '<div class="c-glitch__img">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?>
+					<?php echo '<div class="c-glitch__img">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?>
+					<?php echo '<div class="c-glitch__img">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?>
+					<!-- <?php echo '<div class="c-glitch__img">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?> -->
+					<?php echo '<div class="img-size-dummy">'. Group_Control_Image_Size::get_attachment_image_html( $settings ).'</div>'; ?>
+				</div>
+			<?php if ( $link ) : ?>
+					</a>
+			<?php endif; ?>
+			<?php if ( $has_caption ) : ?>
+					<figcaption class="widget-image-caption wp-caption-text"><?php echo $this->get_caption( $settings ); ?></figcaption>
+			<?php endif; ?>
+			<?php if ( $has_caption ) : ?>
+				</figure>
+			<?php endif; ?>
+		</div>
+		<?php
 	}
 
-	protected function content_template() {}
+	/**
+	 * Render image widget output in the editor.
+	 *
+	 * Written as a Backbone JavaScript template and used to generate the live preview.
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 */
+	protected function _content_template() {
+		?>
+		<# if ( settings.image.url ) {
+			var image = {
+				id: settings.image.id,
+				url: settings.image.url,
+				size: settings.image_size,
+				dimension: settings.image_custom_dimension,
+				model: view.getEditModel()
+			};
 
-	public function render_plain_content( $instance = [] ) {}
+			var image_url = elementor.imagesManager.getImageUrl( image );
 
+			if ( ! image_url ) {
+				return;
+			}
+
+			var hasCaption = function() {
+				if( ! settings.caption_source || 'none' === settings.caption_source ) {
+					return false;
+				}
+				return true;
+			}
+
+			var ensureAttachmentData = function( id ) {
+				if ( 'undefined' === typeof wp.media.attachment( id ).get( 'caption' ) ) {
+					wp.media.attachment( id ).fetch().then( function( data ) {
+						view.render();
+					} );
+				}
+			}
+
+			var getAttachmentCaption = function( id ) {
+				if ( ! id ) {
+					return '';
+				}
+				ensureAttachmentData( id );
+				return wp.media.attachment( id ).get( 'caption' );
+			}
+
+			var getCaption = function() {
+				if ( ! hasCaption() ) {
+					return '';
+				}
+				return 'custom' === settings.caption_source ? settings.caption : getAttachmentCaption( settings.image.id );
+			}
+
+			var link_url;
+
+			if ( 'custom' === settings.link_to ) {
+				link_url = settings.link.url;
+			}
+
+			if ( 'file' === settings.link_to ) {
+				link_url = settings.image.url;
+			}
+
+			#><div class="elementor-image{{ settings.shape ? ' elementor-image-shape-' + settings.shape : '' }}"><#
+			var imgClass = '';
+
+			if ( '' !== settings.hover_animation ) {
+				imgClass = 'elementor-animation-' + settings.hover_animation;
+			}
+
+			if ( hasCaption() ) {
+				#><figure class="wp-caption"><#
+			}
+
+			if ( link_url ) {
+					#><a class="elementor-clickable" data-elementor-open-lightbox="{{ settings.open_lightbox }}" href="{{ link_url }}"><#
+			}
+						#><img src="{{ image_url }}" class="{{ imgClass }}" /><#
+
+			if ( link_url ) {
+					#></a><#
+			}
+
+			if ( hasCaption() ) {
+					#><figcaption class="widget-image-caption wp-caption-text">{{{ getCaption() }}}</figcaption><#
+			}
+
+			if ( hasCaption() ) {
+				#></figure><#
+			}
+
+			#></div><#
+		} #>
+		<?php
+	}
+
+	/**
+	 * Retrieve image widget link URL.
+	 *
+	 * @since 1.0.0
+	 * @access private
+	 *
+	 * @param array $settings
+	 *
+	 * @return array|string|false An array/string containing the link URL, or false if no link.
+	 */
+	private function get_link_url( $settings ) {
+		if ( 'none' === $settings['link_to'] ) {
+			return false;
+		}
+
+		if ( 'custom' === $settings['link_to'] ) {
+			if ( empty( $settings['link']['url'] ) ) {
+				return false;
+			}
+			return $settings['link'];
+		}
+
+		return [
+			'url' => $settings['image']['url'],
+		];
+	}
 }
 \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widget_image_distortion_for_elementor() );

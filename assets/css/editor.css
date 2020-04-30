@@ -115,7 +115,7 @@
 
   /* =Custom Styles
 ------------------------------------- */
-  .c-glitch,
+  /* .c-glitch,
   .c-glitch__img {
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -127,7 +127,7 @@
     margin: 0 auto;
     overflow: hidden;
     position: relative;
-    /* width: 60vw; */
+    width: 60vw;
   }
 
   .c-glitch__img {
@@ -141,7 +141,19 @@
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     width: calc(100% + 10px * 2);
+  } */
+
+  .c-glitch {
+    position: relative;
   }
+  .c-glitch__img {
+      position: absolute;
+      top: 0;
+      /* left: 50%; */
+      width: 100%;
+      height: 100%;
+  }
+
 
   .c-glitch:hover .c-glitch__img:nth-child(n+2) {
     -webkit-animation-duration: 2s;
